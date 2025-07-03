@@ -2,15 +2,6 @@
 
 cd /d "%~dp0"
 
-net session >nul 2>&1
-if %errorLevel% neq 0 (
-    echo "Not Admin %~dp0"
-    pause
-    
-    powershell -Command "Start-Process '%~f0' -Verb runAs"
-    exit /b
-)
-
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
