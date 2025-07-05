@@ -4,7 +4,7 @@ setlocal
 cd /d "%~dp0"
 
 set "FILE_PATH=%~dp0.gitignore"
-set "IGNORE_PATHS=RNK_Versions_Builders/ gitPush.bat"
+set "IGNORE_PATHS=RNK_Versions_Builders/ %~1"
 
 if not exist "%FILE_PATH%" (
     echo.>"%FILE_PATH%"
