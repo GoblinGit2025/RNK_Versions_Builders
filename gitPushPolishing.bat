@@ -8,7 +8,7 @@ setlocal enabledelayedexpansion
 git config core.quotePath false
 git config i18n.logOutputEncoding utf-8
 
-set "changedFiles="
+set "changedFiles=Polishing:"
 
 set "diffFiles=modifiedFiles="
 for /f "delims=" %%f in ('git diff --name-only') do (
@@ -26,7 +26,7 @@ if "!addFiles!" neq "addedFiles=" (
    set "changedFiles=!changedFiles! !addFiles!"
 )
 
-if "!changedFiles!"=="" (
+if "!changedFiles!"=="Polishing:" (
    echo No changed files to commit.
    goto :EOF
 )
