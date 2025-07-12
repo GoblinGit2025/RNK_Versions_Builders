@@ -10,33 +10,28 @@ git config i18n.logOutputEncoding utf-8
 
 set "changedFiles=Polishing:"
 
-set "diffFiles=C"
+set "diffFiles=modifiedFiles="
 for /f "delims=" %%f in ('git diff --name-only') do (
-    set "changedFiles=!changedFiles!%%f|"
+    set "diffFiles=!diffFiles!%%f|"
 )
 if "!diffFiles!" neq "modifiedFiles=" (
-   set "diffFiles=!diffFiles!:"
+   set "changedFiles=!changedFiles! !diffFiles!"
 )
-
-cd /d "!diffFiles!\"
 
 set "addFiles=addedFiles="
-set "commit=%~dp0"
-if "%commit:~-1%"=="\" set "commit=%commit:~0,-1%"
-
-:commit
-
-rmdir /s /q "%commit%\"
-set "commit=%commit%\.."
-
-for %%A in ("%commit%") do set "commit=%%~fA"
-
-if "%commit:~3%"=="" (
-  set "commit=%cd%"
+for /f "delims=" %%f in ('git ls-files --others --exclude-standard') do (
+    set "addFiles=!addFiles!%%f|"
+)
+if "!addFiles!" neq "addedFiles=" (
+   set "changedFiles=!changedFiles! !addFiles!"
 )
 
-goto commit
+if "!changedFiles!"=="Polishing:" (
+   echo No changed files to commit.
+   goto :EOF
+)
 
 git add .
 git commit -m "!changedFiles!"
 git push
+
