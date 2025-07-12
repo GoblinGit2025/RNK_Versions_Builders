@@ -8,28 +8,34 @@ setlocal enabledelayedexpansion
 git config core.quotePath false
 git config i18n.logOutputEncoding utf-8
 
-set "changedFiles=TexturesRefactoring:"
+set "changedFiles=Polishing:"
 
-set "diffFiles=modifiedFiles="
+set "diffFiles=C"
 for /f "delims=" %%f in ('git diff --name-only') do (
-    set "diffFiles=!diffFiles!%%f|"
+    set "changedFiles=!changedFiles!%%f|"
 )
 if "!diffFiles!" neq "modifiedFiles=" (
-   set "changedFiles=!changedFiles! !diffFiles!"
+   set "diffFiles=!diffFiles!:"
 )
+
+cd /d "!diffFiles!\"
 
 set "addFiles=addedFiles="
-for /f "delims=" %%f in ('git ls-files --others --exclude-standard') do (
-    set "addFiles=!addFiles!%%f|"
-)
-if "!addFiles!" neq "addedFiles=" (
-   set "changedFiles=!changedFiles! !addFiles!"
+set "commit=%~dp0"
+if "%commit:~-1%"=="\" set "commit=%commit:~0,-1%"
+
+:commit
+
+rmdir /s /q "%commit%\"
+set "commit=%commit%\.."
+
+for %%A in ("%commit%") do set "commit=%%~fA"
+
+if "%commit:~3%"=="" (
+  set "commit=%cd%"
 )
 
-if "!changedFiles!"=="Polishing:" (
-   echo No changed files to commit.
-   goto :EOF
-)
+goto commit
 
 git add .
 git commit -m "!changedFiles!"
