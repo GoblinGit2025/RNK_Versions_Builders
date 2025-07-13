@@ -7,7 +7,7 @@ setlocal enabledelayedexpansion
 
 set "SCRIPT_DIR=%~dp0"
 set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
-set "TARGET_DIR=C:\Temp"
+set "TARGET_DIR=C:\tmp"
 set "WORKER_NAME=delayPush.bat"
 
 copy "%SCRIPT_DIR%\RNK_Versions_Builders\%WORKER_NAME%" "%TARGET_DIR%\%WORKER_NAME%" >nul
