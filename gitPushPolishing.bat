@@ -5,32 +5,14 @@ cd /d "%~dp0"
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
-git config core.quotePath false
-git config i18n.logOutputEncoding utf-8
+set "SCRIPT_DIR=%~dp0"
+set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
-set "changedFiles=Polishing:"
+set "WORKER_NAME=delayPush.bat"
 
-set "diffFiles=modifiedFiles="
-for /f "delims=" %%f in ('git diff --name-only') do (
-    set "diffFiles=!diffFiles!%%f|"
-)
-if "!diffFiles!" neq "modifiedFiles=" (
-   set "changedFiles=!changedFiles! !diffFiles!"
-)
+copy "%SCRIPT_DIR%\RNK_Versions_Builders\%WORKER_NAME%" "%Temp%\%WORKER_NAME%" >nul
 
-set "addFiles=addedFiles="
-for /f "delims=" %%f in ('git ls-files --others --exclude-standard') do (
-    set "addFiles=!addFiles!%%f|"
-)
-if "!addFiles!" neq "addedFiles=" (
-   set "changedFiles=!changedFiles! !addFiles!"
-)
+powershell -NoProfile -Command ^
+  "Start-Process -FilePath '%Temp%/%WORKER_NAME%' -ArgumentList @('%SCRIPT_DIR%') -Verb RunAs"
 
-if "!changedFiles!"=="Polishing:" (
-   echo No changed files to commit.
-   goto :EOF
-)
-
-git add .
-git commit -m "!changedFiles!"
-git push
+endlocal
